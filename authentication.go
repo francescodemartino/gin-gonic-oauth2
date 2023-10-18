@@ -40,7 +40,7 @@ func Authentication(c *gin.Context) {
 	auth := c.GetHeader("Authorization")[7:]
 	isValid, jwtInfo := isJwtValid(auth, []byte(MasterKey))
 	if isValid {
-		c.Set("user_info", &jwtInfo)
+		c.Set("user_info", jwtInfo)
 		c.Set("user_roles", jwtInfo.Roles)
 		c.Next()
 	} else {
