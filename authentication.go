@@ -85,7 +85,7 @@ func Roles(roles []string) func(c *gin.Context) {
 func State(states []string) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		canContinue := false
-		jwtInfo := c.MustGet("user_info").(*JwtInfo)
+		jwtInfo := c.MustGet("user_info").(JwtInfo)
 		for _, state := range states {
 			if state == jwtInfo.State {
 				canContinue = true
