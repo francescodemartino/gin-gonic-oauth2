@@ -42,6 +42,7 @@ func Authentication(c *gin.Context) {
 	if isValid {
 		c.Set("user_info", *jwtInfo)
 		c.Set("user_roles", jwtInfo.Roles)
+		c.Set("application_id", jwtInfo.Aud)
 		c.Next()
 	} else {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
@@ -57,6 +58,17 @@ func isJwtValid(tokenString string, secretKey []byte) (bool, *JwtInfo) {
 	}
 	jwtInfo, _ := token.Claims.(*JwtInfo)
 	return token.Valid, jwtInfo
+}
+
+func Application(applicationId string) func(c *gin.Context) {
+	return func(c *gin.Context) {
+		applicationIdToken := c.MustGet("application_id").(string)
+		if applicationId == applicationIdToken {
+			c.Next()
+		} else {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+		}
+	}
 }
 
 /*
