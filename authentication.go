@@ -37,13 +37,18 @@ type JwtInfo struct {
 Gin-Gonic middleware to import for oauth2 authentication
 */
 func Authentication(c *gin.Context) {
-	auth := c.GetHeader("Authorization")[7:]
-	isValid, jwtInfo := isJwtValid(auth, []byte(MasterKey))
-	if isValid {
-		c.Set("user_info", *jwtInfo)
-		c.Set("user_roles", jwtInfo.Roles)
-		c.Set("application_id", jwtInfo.Aud)
-		c.Next()
+	auth := c.GetHeader("Authorization")
+	if len(auth) > 8 {
+		auth = auth[7:]
+		isValid, jwtInfo := isJwtValid(auth, []byte(MasterKey))
+		if isValid {
+			c.Set("user_info", *jwtInfo)
+			c.Set("user_roles", jwtInfo.Roles)
+			c.Set("application_id", jwtInfo.Aud)
+			c.Next()
+		} else {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+		}
 	} else {
 		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
 	}
