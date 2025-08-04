@@ -11,6 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"net/http"
+	"time"
 )
 
 type JwtInfo struct {
@@ -62,6 +63,10 @@ func isJwtValid(tokenString string, secretKey []byte) (bool, *JwtInfo) {
 		return false, nil
 	}
 	jwtInfo, _ := token.Claims.(*JwtInfo)
+	timeExpiration := time.Unix(int64(jwtInfo.Exp), 0)
+	if timeExpiration.Before(time.Now()) {
+		return false, nil
+	}
 	return token.Valid, jwtInfo
 }
 
