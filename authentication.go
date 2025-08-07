@@ -48,10 +48,10 @@ func Authentication(c *gin.Context) {
 			c.Set("application_id", jwtInfo.Aud)
 			c.Next()
 		} else {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		}
 	} else {
-		c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 	}
 }
 
@@ -76,7 +76,7 @@ func Application(applicationId string) func(c *gin.Context) {
 		if applicationId == applicationIdToken {
 			c.Next()
 		} else {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		}
 	}
 }
@@ -99,7 +99,7 @@ func Roles(roles []string) func(c *gin.Context) {
 		if canContinue {
 			c.Next()
 		} else {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		}
 	}
 }
@@ -117,7 +117,7 @@ func State(states []string) func(c *gin.Context) {
 		if canContinue {
 			c.Next()
 		} else {
-			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{})
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{})
 		}
 	}
 }
